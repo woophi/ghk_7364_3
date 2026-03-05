@@ -10,21 +10,22 @@ import { Steps } from '@alfalab/core-components/steps/cssm';
 import { Tag } from '@alfalab/core-components/tag/cssm';
 import { Typography } from '@alfalab/core-components/typography/cssm';
 import { BanknotesMIcon } from '@alfalab/icons-glyph/BanknotesMIcon';
-import { CategoryCommisionMIcon } from '@alfalab/icons-glyph/CategoryCommisionMIcon';
-import { CategoryInvoiceMIcon } from '@alfalab/icons-glyph/CategoryInvoiceMIcon';
+import { CheckmarkCircleMIcon } from '@alfalab/icons-glyph/CheckmarkCircleMIcon';
 import { CheckmarkMIcon } from '@alfalab/icons-glyph/CheckmarkMIcon';
 import { ChevronDownMIcon } from '@alfalab/icons-glyph/ChevronDownMIcon';
 import { ChevronUpMIcon } from '@alfalab/icons-glyph/ChevronUpMIcon';
-import { GiftBoxMIcon } from '@alfalab/icons-glyph/GiftBoxMIcon';
-import { useEffect, useState } from 'react';
+import { DocumentLinesLineMIcon } from '@alfalab/icons-glyph/DocumentLinesLineMIcon';
+import { PercentMIcon } from '@alfalab/icons-glyph/PercentMIcon';
+import { QuestionCircleLineMIcon } from '@alfalab/icons-glyph/QuestionCircleLineMIcon';
+import { ShieldMIcon } from '@alfalab/icons-glyph/ShieldMIcon';
+import { UmbrellaMIcon } from '@alfalab/icons-glyph/UmbrellaMIcon';
+import { Fragment, useEffect, useState } from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import hbImg from './assets/hb.png';
-import moneyImg from './assets/money.png';
+import percentImg from './assets/percent.png';
 import rubIcon from './assets/rub.png';
-import sl1 from './assets/sl_1.png';
-import sl2 from './assets/sl_2.png';
-import sl3 from './assets/sl_3.png';
-import sl4 from './assets/sl_4.png';
+import shieldImg from './assets/shield.png';
+import { CheckIcon } from './CheckIcon';
 import { useTimeout } from './hooks/useTimeout';
 import { LS, LSKeys } from './ls';
 import { appSt } from './style.css';
@@ -39,62 +40,15 @@ import {
   randomOtpCode,
 } from './utils/calc';
 import { sendDataToGA } from './utils/events';
-import { round } from './utils/round';
-
-const impItems = [
-  {
-    title: '36% годовых',
-    subtitle: 'Ставка по вкладу с ПДС на 1 месяц',
-    Icon: CategoryCommisionMIcon,
-  },
-  {
-    title: '60 000 ₽',
-    subtitle: 'Минимальная сумма вклада',
-    Icon: BanknotesMIcon,
-  },
-  {
-    title: 'До 1 680 000 ₽',
-    subtitle: 'Бонусы по ПДС от государства',
-    Icon: GiftBoxMIcon,
-  },
-  {
-    title: 'Без пополнения и без снятия',
-    subtitle: 'Условия по вкладу',
-    Icon: CategoryInvoiceMIcon,
-  },
-];
-
-const pdsSlides = [
-  {
-    img: sl1,
-    title: 'До 360 000 ₽',
-    subtitle: 'Бонус от государства за 10 лет',
-  },
-  {
-    img: sl2,
-    title: 'До 1 320 000 ₽',
-    subtitle: 'Налоговый вычет за 15 лет',
-  },
-  {
-    img: sl3,
-    title: '21,56% годовых',
-    subtitle: 'Инвестиционный доход за 2024 год',
-  },
-  {
-    img: sl4,
-    title: 'Деньги застрахованы',
-    subtitle: 'До 2,8 млн ₽ в Агентстве по страхованию вкладов',
-  },
-];
 
 const hiw = [
   {
-    title: 'Откройте ПДС в приложении',
-    desc: 'На сумму от 60 000 ₽ — это ваш первый взнос в программу',
+    title: 'Оформите ПДС в приложении',
+    desc: 'На сумму от 30 000 ₽ — это ваш первый взнос в программу, дальше любая сумма',
   },
   {
     title: 'Откройте Альфа‑Вклад',
-    desc: 'С программой долгосрочных сбережений на сумму не более первого взноса в ПДС',
+    desc: 'Сумма не больше первого взноса в ПДС',
   },
   {
     title: 'Получайте больше дохода',
@@ -102,7 +56,39 @@ const hiw = [
   },
 ];
 
+const secs = [
+  {
+    title: 'Вклад застрахован',
+    subtitle: 'До 1 400 000 ₽ под защитой',
+    icon: <UmbrellaMIcon color="#000000" />,
+  },
+  {
+    title: 'Прозрачный доход',
+    subtitle: 'Ставка прописана в договоре — никаких скрытых условий',
+    icon: <CheckmarkCircleMIcon color="#000000" />,
+  },
+  {
+    title: 'Защита от импульсивных покупок',
+    subtitle: 'Не тратьте деньги на ненужные мелочи',
+    icon: <ShieldMIcon color="#000000" />,
+  },
+];
+
 const faqs = [
+  {
+    question: 'Что такое ПДС?',
+    answers: [
+      'Программа долгосрочных сбережений (ПДС) — это накопительный продукт с финансовой поддержкой государства. С ним вы можете накопить на долгосрочные цели или создать пенсионный капитал.',
+    ],
+  },
+  {
+    question: 'Сколько денег нужно вносить на ПДС-счёт?',
+    answers: [
+      'Чтобы государство софинансировало ваши взносы, пополнять счёт нужно на сумму не менее 2000 ₽ в год.',
+      'Однако вы можете отталкиваться от вашего дохода и пополнять счёт на любую другую сумму.',
+      'Деньги можно внести один раз за год или вносить несколькими платежами в течение года. Чтобы не забывать пополнять счёт, подключите автоплатёж.',
+    ],
+  },
   {
     question: 'На какой срок открывается ПДС?',
     answers: [
@@ -157,7 +143,26 @@ const investPeriods = [
   },
 ];
 
-const MIN_INVEST_SUM = 60_000;
+const btns = [
+  {
+    title: 'Какие условия',
+    icon: <QuestionCircleLineMIcon color="#000000" />,
+    link: '#conditions',
+  },
+  {
+    title: 'Рассчитать выгоду',
+    icon: <PercentMIcon color="#000000" />,
+    link: '#calculate',
+  },
+  {
+    title: 'Как оформить',
+    icon: <DocumentLinesLineMIcon color="#000000" />,
+    link: '#how-to',
+  },
+];
+
+const MIN_INVEST_SUM = 30_000;
+const MIN_INVEST_VKLAD = 30_000;
 
 const docNumberPds = randomDocNumber();
 const docNumberVklad = randomDocNumber();
@@ -166,24 +171,25 @@ const emailRu = randomEmailRu();
 export const App = () => {
   const [thxShow, setThx] = useState(LS.getItem(LSKeys.ShowThx, false));
   const [collapsedItems, setCollapsedItem] = useState<string[]>([]);
-  const [steps, setSteps] = useState<'init' | 'step1' | 'step2' | 'step-confirm3' | 'step-confirmed3' | 'step3' | 'step4'>(
-    'init',
-  );
-  const [sum, setSum] = useState(MIN_INVEST_SUM);
+  const [steps, setSteps] = useState<
+    'init' | 'step1' | 'step2' | 'step-confirm3' | 'step-confirmed3' | 'step3' | 'step4' | 'step5'
+  >('init');
+  const [pdsSum, setPdsSum] = useState(MIN_INVEST_SUM);
+  const [vkladSum, setVkladSum] = useState(MIN_INVEST_SUM);
+  const [vklad, setVklad] = useState(MIN_INVEST_VKLAD);
   const [error, setError] = useState('');
   const [invetstPeriod, setInvestPeriod] = useState<number>(1);
   const [otpCode, setOtpCode] = useState('');
 
-  const shouldErrorInvestSum = !sum || sum < MIN_INVEST_SUM;
+  const shouldErrorInvestSum = !pdsSum || pdsSum < MIN_INVEST_SUM;
+  const shouldErrorVkladSum = vkladSum !== pdsSum;
   const investPeriodData = investPeriods.find(period => period.value === invetstPeriod) ?? investPeriods[0];
-  const vkladSum = round(sum / 2);
-  const pdsSum = round(sum / 2);
   const taxRefund = calculateTaxRefund(pdsSum);
   const govCharity = calculateStateSupport(pdsSum);
   const investmentsIncome = calculateInvestmentIncome(pdsSum, 0);
   const total = investmentsIncome + govCharity + taxRefund;
 
-  const withOtpCode = steps === 'step-confirm3' || steps === 'step4';
+  const withOtpCode = steps === 'step-confirm3' || steps === 'step5';
 
   useTimeout(
     () => {
@@ -194,15 +200,15 @@ export const App = () => {
   useTimeout(
     () => {
       if (steps === 'step-confirm3') {
-        window.gtag('event', '7106_sms_pds', { var: 'var3' });
+        window.gtag('event', '7364_sms_pds', { var: 'var3' });
         sendDataToGA({
           sum: pdsSum,
           product_type: 'ПДС',
         });
         setSteps('step-confirmed3');
       }
-      if (steps === 'step4') {
-        window.gtag('event', '7106_sms_deposit', { var: 'var3' });
+      if (steps === 'step5') {
+        window.gtag('event', '7364_sms_deposit', { var: 'var3' });
         submit();
       }
       setOtpCode('');
@@ -226,7 +232,7 @@ export const App = () => {
   };
 
   const goToStep2 = () => {
-    window.gtag('event', '7106_open_pds', { var: 'var3' });
+    window.gtag('event', '7364_open_pds', { var: 'var3' });
     if (shouldErrorInvestSum) {
       setError('Минимальная сумма — 60 000 ₽');
       return;
@@ -235,8 +241,18 @@ export const App = () => {
     setSteps('step2');
   };
 
+  const goToStep4 = () => {
+    window.gtag('event', '7364_click_open_deposit_var3');
+    if (shouldErrorVkladSum) {
+      setError(`Сумма вклада должна быть равна сумме ПДС — ${pdsSum.toLocaleString('ru-RU')} ₽`);
+      return;
+    }
+
+    setSteps('step4');
+  };
+
   const goToConfirmStep3 = () => {
-    window.gtag('event', '7106_pay_pds', { var: 'var3' });
+    window.gtag('event', '7364_pay_pds', { var: 'var3' });
     setSteps('step-confirm3');
   };
 
@@ -244,22 +260,32 @@ export const App = () => {
     if (error) {
       setError('');
     }
-    setSum(value ?? 0);
+    if (steps === 'step3') {
+      setVkladSum(value ?? 0);
+    } else {
+      setPdsSum(value ?? 0);
+    }
+  };
+  const handleChangeInputVklad = (_: React.ChangeEvent<HTMLInputElement> | null, { value }: { value: number | null }) => {
+    if (error) {
+      setError('');
+    }
+    setVklad(value ?? 0);
   };
   if (thxShow) {
     return <ThxLayout />;
   }
 
-  if (steps === 'step3') {
+  if (steps === 'step4') {
     return (
       <>
         <div className={appSt.container}>
           <Typography.Text view="caps" style={{ marginTop: '1rem' }}>
-            ШАГ 3 из 3
+            ШАГ 2 из 2
           </Typography.Text>
 
           <Typography.TitleResponsive tag="h1" view="large" font="system" weight="semibold">
-            Открытие вклада
+            Всё проверьте, и можно оплатить и открыть вклад
           </Typography.TitleResponsive>
 
           <div>
@@ -303,11 +329,118 @@ export const App = () => {
             block
             view="primary"
             onClick={() => {
-              window.gtag('event', '7106_pay_deposit_var3');
-              setSteps('step4');
+              window.gtag('event', '7364_click_pay_deposit_var3');
+              setSteps('step5');
             }}
           >
-            Оплатить вклад
+            Оплатить
+          </Button>
+        </div>
+      </>
+    );
+  }
+
+  if (steps === 'step3') {
+    return (
+      <>
+        <div className={appSt.container}>
+          <Typography.Text view="caps" style={{ marginTop: '1rem' }}>
+            ШАГ 1 из 2
+          </Typography.Text>
+
+          <Typography.TitleResponsive tag="h1" view="large" font="system" weight="semibold">
+            Открытие вклада
+          </Typography.TitleResponsive>
+
+          <div style={{ marginTop: '12px' }}>
+            <Typography.Text view="primary-small" color="secondary" tag="p" defaultMargins={false}>
+              Счёт списания
+            </Typography.Text>
+
+            <div className={appSt.bannerAccount}>
+              <img src={rubIcon} width={48} height={48} alt="rubIcon" />
+
+              <Typography.Text view="primary-small" weight="medium">
+                Текущий счёт
+              </Typography.Text>
+            </div>
+          </div>
+
+          <AmountInput
+            label="Cумма инвестиций"
+            labelView="outer"
+            value={vkladSum}
+            error={error}
+            onChange={handleChangeInput}
+            block
+            minority={1}
+            bold={false}
+            min={MIN_INVEST_SUM}
+            hint={`Сумма вклада должна быть равна сумме ПДС — ${pdsSum.toLocaleString('ru-RU')} ₽`}
+          />
+          <div>
+            <Typography.Text view="primary-small" color="secondary" tag="p" defaultMargins={false}>
+              На какой срок открыть вклад
+            </Typography.Text>
+          </div>
+        </div>
+
+        <div>
+          <Swiper style={{ margin: '-8px 0 1rem 1rem' }} spaceBetween={12} slidesPerView="auto">
+            {investPeriods.map(({ title, value }) => (
+              <SwiperSlide key={value} className={appSt.swSlide}>
+                <Tag
+                  view="filled"
+                  size="xxs"
+                  shape="rectangular"
+                  checked={invetstPeriod === value}
+                  onClick={() => setInvestPeriod(value)}
+                >
+                  {title}
+                </Tag>
+              </SwiperSlide>
+            ))}
+          </Swiper>
+        </div>
+
+        <div className={appSt.box2}>
+          <Typography.TitleResponsive tag="h2" view="xsmall" font="system" weight="semibold">
+            Ваша выгода
+          </Typography.TitleResponsive>
+
+          <div className={appSt.box3}>
+            <div className={appSt.rowSb}>
+              <Typography.Text view="primary-small" color="secondary">
+                Ставка
+              </Typography.Text>
+              <Typography.Text view="primary-small">
+                {(investPeriodData.vkladPercent * 100).toLocaleString('ru-RU')}% годовых
+              </Typography.Text>
+            </div>
+            <div className={appSt.rowSb}>
+              <Typography.Text view="primary-small" color="secondary">
+                Срок
+              </Typography.Text>
+              <Typography.Text view="primary-small">{investPeriodData.title}</Typography.Text>
+            </div>
+            <Divider />
+
+            <div className={appSt.rowSb}>
+              <Typography.Text view="primary-small" color="secondary">
+                Доход за срок
+              </Typography.Text>
+              <Typography.Text view="primary-medium" weight="medium">
+                {calcIncomeByMonths(vkladSum, investPeriodData.vkladPercent, invetstPeriod).toLocaleString('ru-RU')} ₽
+              </Typography.Text>
+            </div>
+          </div>
+        </div>
+
+        <Gap size={128} />
+
+        <div className={appSt.bottomBtn()}>
+          <Button block view="primary" onClick={goToStep4}>
+            Открыть
           </Button>
         </div>
       </>
@@ -352,7 +485,7 @@ export const App = () => {
               weight="semibold"
               style={{ textAlign: 'center', marginTop: '1rem' }}
             >
-              {vkladSum.toLocaleString('ru-RU')} ₽
+              {pdsSum.toLocaleString('ru-RU')} ₽
             </Typography.TitleResponsive>
             <Typography.Text view="primary-small">Деньги зарезервированы и спишутся после открытия вклада</Typography.Text>
             <Typography.Text view="primary-small" color="secondary">
@@ -368,7 +501,7 @@ export const App = () => {
             block
             view="secondary"
             onClick={() => {
-              window.gtag('event', '7106_open_deposit_after_pds', { var: 'var3' });
+              window.gtag('event', '7364_open_deposit_after_pds', { var: 'var3' });
               setSteps('step3');
             }}
             style={{ backgroundColor: '#FFFFFF24', color: '#fff' }}
@@ -412,11 +545,11 @@ export const App = () => {
       <>
         <div className={appSt.container}>
           <Typography.Text view="caps" style={{ marginTop: '1rem' }}>
-            ШАГ 2 из 3
+            ШАГ 2 из 2
           </Typography.Text>
 
           <Typography.TitleResponsive tag="h1" view="large" font="system" weight="semibold">
-            Открытие ПДС
+            Всё проверьте, и можно оплатить и открыть ПДС
           </Typography.TitleResponsive>
 
           <div>
@@ -458,16 +591,12 @@ export const App = () => {
       <>
         <div className={appSt.container}>
           <Typography.Text view="caps" style={{ marginTop: '1rem' }}>
-            ШАГ 1 из 3
+            ШАГ 1 из 2
           </Typography.Text>
 
           <Typography.TitleResponsive tag="h1" view="large" font="system" weight="semibold">
-            Заполните данные
+            Открытие ПДС
           </Typography.TitleResponsive>
-
-          <Typography.Text view="primary-medium" color="secondary">
-            Далее вы подтвердите открытие ПДС и вклада
-          </Typography.Text>
 
           <div style={{ marginTop: '12px' }}>
             <Typography.Text view="primary-small" color="secondary" tag="p" defaultMargins={false}>
@@ -487,101 +616,24 @@ export const App = () => {
             <AmountInput
               label="Cумма инвестиций"
               labelView="outer"
-              value={sum}
+              value={pdsSum}
               error={error}
               onChange={handleChangeInput}
               block
               minority={1}
               bold={false}
               min={MIN_INVEST_SUM}
+              hint="Минимальная сумма — 30 000 ₽"
             />
-            {!shouldErrorInvestSum && (
-              <>
-                <div className={appSt.rowSb} style={{ marginTop: '.5rem' }}>
-                  <Typography.Text view="primary-small" color="secondary">
-                    На вклад
-                  </Typography.Text>
-                  <Typography.Text view="primary-small" color="secondary">
-                    {round(sum / 2).toLocaleString('ru-RU')} ₽
-                  </Typography.Text>
-                </div>
-                <div className={appSt.rowSb}>
-                  <Typography.Text view="primary-small" color="secondary">
-                    На ПДС
-                  </Typography.Text>
-                  <Typography.Text view="primary-small" color="secondary">
-                    {round(sum / 2).toLocaleString('ru-RU')} ₽
-                  </Typography.Text>
-                </div>
-              </>
-            )}
           </div>
-
-          <div>
-            <Typography.Text view="primary-small" color="secondary" tag="p" defaultMargins={false}>
-              На какой срок открыть вклад
-            </Typography.Text>
-          </div>
-        </div>
-
-        <div>
-          <Swiper style={{ margin: '-8px 0 1rem 1rem' }} spaceBetween={12} slidesPerView="auto">
-            {investPeriods.map(({ title, value }) => (
-              <SwiperSlide key={value} className={appSt.swSlide}>
-                <Tag
-                  view="filled"
-                  size="xxs"
-                  shape="rectangular"
-                  checked={invetstPeriod === value}
-                  onClick={() => setInvestPeriod(value)}
-                >
-                  {title}
-                </Tag>
-              </SwiperSlide>
-            ))}
-          </Swiper>
         </div>
 
         <div className={appSt.box2}>
           <Typography.TitleResponsive tag="h2" view="xsmall" font="system" weight="semibold">
-            Ваша выгода по двум продуктам
+            Ваша выгода
           </Typography.TitleResponsive>
 
           <div className={appSt.box3}>
-            <Typography.Text view="primary-small" weight="medium">
-              Вклад
-            </Typography.Text>
-
-            <div className={appSt.rowSb}>
-              <Typography.Text view="primary-small" color="secondary">
-                Ставка
-              </Typography.Text>
-              <Typography.Text view="primary-small">
-                {(investPeriodData.vkladPercent * 100).toLocaleString('ru-RU')}% годовых
-              </Typography.Text>
-            </div>
-            <div className={appSt.rowSb}>
-              <Typography.Text view="primary-small" color="secondary">
-                Срок
-              </Typography.Text>
-              <Typography.Text view="primary-small">{investPeriodData.title}</Typography.Text>
-            </div>
-            <Divider />
-
-            <div className={appSt.rowSb}>
-              <Typography.Text view="primary-small" color="secondary">
-                Доход за срок
-              </Typography.Text>
-              <Typography.Text view="primary-medium" weight="medium">
-                {calcIncomeByMonths(vkladSum, investPeriodData.vkladPercent, invetstPeriod).toLocaleString('ru-RU')} ₽
-              </Typography.Text>
-            </div>
-          </div>
-          <div className={appSt.box3}>
-            <Typography.Text view="primary-small" weight="medium">
-              ПДС
-            </Typography.Text>
-
             <div className={appSt.rowSb}>
               <Typography.Text view="primary-small" color="secondary">
                 Срок
@@ -635,163 +687,355 @@ export const App = () => {
 
   return (
     <>
-      <div className={appSt.containerApp}>
-        <div className={appSt.container}>
-          <img
-            src={hbImg}
-            width={258}
-            height={213}
-            alt="Hb"
-            style={{ objectFit: 'contain', margin: 'auto', marginTop: '1rem' }}
-          />
-          <Typography.TitleResponsive
-            style={{ textAlign: 'center' }}
-            tag="h1"
-            view="large"
-            font="system"
-            weight="semibold"
-            color="primary-inverted"
-          >
-            Альфа‑Вклад
-          </Typography.TitleResponsive>
-          <Typography.Text style={{ textAlign: 'center' }} view="primary-medium" color="primary-inverted">
-            Получите повышенную ставку по вкладу с программой долгосрочных сбережений
-          </Typography.Text>
+      <div className={appSt.container}>
+        <Typography.TitleResponsive
+          style={{ textAlign: 'center', marginTop: '1rem' }}
+          tag="h1"
+          view="large"
+          font="system"
+          weight="semibold"
+          color="primary"
+        >
+          Вклад с доходностью
+          <br />
+          36% годовых
+        </Typography.TitleResponsive>
+        <Typography.Text style={{ textAlign: 'center' }} view="primary-medium" color="primary">
+          Повышенная ставка по вкладу при подключении Программы долгосрочных сбережений
+        </Typography.Text>
+        <img
+          src={hbImg}
+          width={258}
+          height={213}
+          alt="Hb"
+          style={{ objectFit: 'contain', margin: 'auto', marginTop: '1rem' }}
+        />
+
+        <div className={appSt.btnsContainer}>
+          {btns.map(btn => (
+            <div
+              key={btn.title}
+              className={appSt.btnContainer}
+              onClick={() => {
+                const element = document.querySelector(btn.link);
+                if (element) {
+                  const yOffset = -40;
+                  const y = element.getBoundingClientRect().top + window.pageYOffset + yOffset;
+                  window.scrollTo({ top: y, behavior: 'smooth' });
+                }
+              }}
+            >
+              <SuperEllipse>{btn.icon}</SuperEllipse>
+              <Typography.Text view="primary-small">{btn.title}</Typography.Text>
+            </div>
+          ))}
         </div>
 
-        <div className={appSt.containerB}>
-          {impItems.map(({ title, subtitle, Icon }) => (
-            <PureCell key={title}>
-              <PureCell.Graphics verticalAlign="center">
-                <SuperEllipse size={48}>
-                  <Icon color="#030306E0" />
-                </SuperEllipse>
-              </PureCell.Graphics>
-              <PureCell.Content>
-                <PureCell.Main>
-                  <Typography.Text view="primary-small" weight="bold">
-                    {title}
-                  </Typography.Text>
-                  <Typography.Text view="primary-small" color="secondary">
-                    {subtitle}
-                  </Typography.Text>
-                </PureCell.Main>
-              </PureCell.Content>
-            </PureCell>
-          ))}
+        <div />
 
-          <div />
+        <div className={appSt.containerB} id="conditions">
+          <div style={{ padding: '0 1rem 0' }}>
+            <Typography.TitleResponsive tag="h2" view="small" font="system" weight="medium">
+              Два продукта работают вместе
+            </Typography.TitleResponsive>
+            <Typography.Text view="primary-small" color="secondary">
+              Вы получаете доход по вкладу и деньги от государства одновременно
+            </Typography.Text>
+          </div>
 
-          <PureCell className={appSt.cellBanner} verticalPadding="airy" horizontalPadding="both">
+          <div className={appSt.box}>
+            <div className={appSt.row}>
+              <img src={percentImg} width={32} height={32} alt="percentIcon" />
+              <Typography.Text view="primary-medium" weight="medium">
+                Альфа-Вклад
+              </Typography.Text>
+            </div>
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+              <div className={appSt.rowSb}>
+                <Typography.Text view="primary-small" color="secondary">
+                  Процент
+                  <br />
+                  по вкладу
+                </Typography.Text>
+                <div className={appSt.rowSb} style={{ width: '50%' }}>
+                  <Typography.Text view="primary-small" weight="medium">
+                    До 36% годовых
+                  </Typography.Text>
+                  <CheckIcon />
+                </div>
+              </div>
+              <Divider />
+              <div className={appSt.rowSb}>
+                <Typography.Text view="primary-small" color="secondary">
+                  Минимальная
+                  <br />
+                  сумма вклада
+                </Typography.Text>
+                <div className={appSt.rowSb} style={{ width: '50%' }}>
+                  <Typography.Text view="primary-small" weight="medium">
+                    От 30 000 ₽
+                  </Typography.Text>
+                  <CheckIcon />
+                </div>
+              </div>
+              <Divider />
+              <div className={appSt.rowSb}>
+                <Typography.Text view="primary-small" color="secondary">
+                  Условия
+                </Typography.Text>
+                <div className={appSt.rowSb} style={{ width: '50%' }}>
+                  <Typography.Text view="primary-small" weight="medium">
+                    Без пополнения
+                    <br />и снятия
+                  </Typography.Text>
+                  <CheckIcon />
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className={appSt.box}>
+            <div className={appSt.row}>
+              <img src={shieldImg} width={32} height={32} alt="shieldIcon" />
+              <Typography.Text view="primary-medium" weight="medium">
+                Программа долгосрочных сбережений (ПДС)
+              </Typography.Text>
+            </div>
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+              <div className={appSt.rowSb}>
+                <Typography.Text view="primary-small" color="secondary">
+                  Налоговый
+                  <br />
+                  вычет за 15 лет
+                </Typography.Text>
+                <div className={appSt.rowSb} style={{ width: '50%' }}>
+                  <Typography.Text view="primary-small" weight="medium">
+                    До 1 320 000 ₽
+                  </Typography.Text>
+                  <CheckIcon />
+                </div>
+              </div>
+              <Divider />
+              <div className={appSt.rowSb}>
+                <Typography.Text view="primary-small" color="secondary">
+                  Доплата
+                  <br />
+                  от государства
+                </Typography.Text>
+                <div className={appSt.rowSb} style={{ width: '50%' }}>
+                  <Typography.Text view="primary-small" weight="medium">
+                    До 360 000 ₽
+                  </Typography.Text>
+                  <CheckIcon />
+                </div>
+              </div>
+              <Divider />
+              <div className={appSt.rowSb}>
+                <Typography.Text view="primary-small" color="secondary">
+                  Инвестиционный <br />
+                  доход
+                </Typography.Text>
+                <div className={appSt.rowSb} style={{ width: '50%' }}>
+                  <Typography.Text view="primary-small" weight="medium">
+                    21,56% <br />
+                    годовых
+                  </Typography.Text>
+                  <CheckIcon />
+                </div>
+              </div>
+              <Divider />
+              <div className={appSt.rowSb}>
+                <Typography.Text view="primary-small" color="secondary">
+                  Первый взнос
+                  <br /> в ПДС
+                </Typography.Text>
+                <div className={appSt.rowSb} style={{ width: '50%' }}>
+                  <div>
+                    <Typography.Text view="primary-small" weight="medium" tag="p" defaultMargins={false}>
+                      от 30 000 ₽
+                    </Typography.Text>
+                    <Typography.Text view="primary-small" color="secondary" tag="p" defaultMargins={false}>
+                      дальше любая сумма
+                    </Typography.Text>
+                  </div>
+                  <CheckIcon />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div />
+
+        <Typography.TitleResponsive tag="h2" view="small" font="system" weight="semibold" color="primary" id="calculate">
+          Расчитайте ваш доход по вкладу
+        </Typography.TitleResponsive>
+
+        <AmountInput
+          label="Сумма вклада"
+          labelView="outer"
+          value={vklad}
+          onChange={handleChangeInputVklad}
+          block
+          minority={1}
+          bold={false}
+          min={MIN_INVEST_VKLAD}
+          hint="От 30 000 ₽, не выше первого взноса в ПДС"
+        />
+
+        <div>
+          <Typography.Text view="primary-small" color="secondary" tag="p" defaultMargins={false}>
+            На какой срок открыть вклад
+          </Typography.Text>
+          <Swiper style={{ marginTop: '8px' }} spaceBetween={12} slidesPerView="auto">
+            {investPeriods.map(({ title, value }) => (
+              <SwiperSlide key={value} className={appSt.swSlide}>
+                <Tag
+                  view="filled"
+                  size="xxs"
+                  shape="rectangular"
+                  checked={invetstPeriod === value}
+                  onClick={() => setInvestPeriod(value)}
+                >
+                  {title}
+                </Tag>
+              </SwiperSlide>
+            ))}
+          </Swiper>
+        </div>
+
+        <div className={appSt.containerB} style={{ borderRadius: '1rem' }}>
+          <Typography.Text view="primary-medium" weight="medium">
+            Ставка {Math.floor(investPeriodData.vkladPercent * 100).toLocaleString('ru-RU')}%
+          </Typography.Text>
+
+          <PureCell>
             <PureCell.Graphics verticalAlign="center">
-              <img src={moneyImg} width={32} height={32} alt="money" />
+              <SuperEllipse size={48} backgroundColor="#E7E9EC">
+                <PercentMIcon color="#000000" />
+              </SuperEllipse>
             </PureCell.Graphics>
             <PureCell.Content>
               <PureCell.Main>
-                <Typography.Text view="secondary-large">
-                  Предложение действует с 12 января по 8 февраля 2026 года
+                <Typography.Text view="primary-small" weight="medium">
+                  + {calcIncomeByMonths(vklad, investPeriodData.vkladPercent, invetstPeriod).toLocaleString('ru-RU')} ₽
+                </Typography.Text>
+                <Typography.Text view="primary-small" color="secondary">
+                  Доход по вкладу
                 </Typography.Text>
               </PureCell.Main>
             </PureCell.Content>
           </PureCell>
+          <PureCell>
+            <PureCell.Graphics verticalAlign="center">
+              <SuperEllipse size={48} backgroundColor="#E7E9EC">
+                <BanknotesMIcon color="#000000" />
+              </SuperEllipse>
+            </PureCell.Graphics>
+            <PureCell.Content>
+              <PureCell.Main>
+                <Typography.Text view="primary-small" weight="medium" color="positive">
+                  {(calcIncomeByMonths(vklad, investPeriodData.vkladPercent, invetstPeriod) + vklad).toLocaleString('ru-RU')}{' '}
+                  ₽ + инвестиции в ПДС
+                </Typography.Text>
+                <Typography.Text view="primary-small" color="secondary">
+                  Сумма в конце срока
+                </Typography.Text>
+              </PureCell.Main>
+            </PureCell.Content>
+          </PureCell>
+        </div>
 
-          <div />
+        <Typography.TitleResponsive
+          style={{ marginTop: '1rem' }}
+          tag="h2"
+          view="small"
+          font="system"
+          weight="medium"
+          id="how-to"
+        >
+          Три шага — и деньги работают
+        </Typography.TitleResponsive>
 
-          <div className={appSt.box}>
-            <Typography.TitleResponsive tag="h3" view="small" font="system" weight="semibold">
-              Программа долгосрочных сбережений (ПДС)
-            </Typography.TitleResponsive>
+        <Steps isVerticalAlign={true} interactive={false} className={appSt.stepStyle}>
+          {hiw.map(item => (
+            <span key={item.title}>
+              <Typography.Text tag="p" defaultMargins={false} view="component-primary">
+                {item.title}
+              </Typography.Text>
+              <Typography.Text view="primary-small" color="secondary">
+                {item.desc}
+              </Typography.Text>
+            </span>
+          ))}
+        </Steps>
 
-            <Typography.Text view="primary-small">
-              Это новый инструмент для накоплений с финансовой поддержкой государства
-            </Typography.Text>
-            <Typography.Text view="primary-small">
-              Подойдёт тем, кто хочет накопить на большие цели в будущем или получать дополнительный доход на пенсии
-            </Typography.Text>
+        <Typography.TitleResponsive style={{ marginTop: '1rem' }} tag="h2" view="small" font="system" weight="medium">
+          Ваши деньги в безопасности
+        </Typography.TitleResponsive>
 
-            <div>
-              <Swiper style={{ marginLeft: '0' }} spaceBetween={12} slidesPerView="auto">
-                {pdsSlides.map(({ img, title, subtitle }) => (
-                  <SwiperSlide key={title} className={appSt.boxSlide}>
-                    <PureCell>
-                      <PureCell.Graphics verticalAlign="top">
-                        <img src={img} width={32} height={32} alt={title} />
-                      </PureCell.Graphics>
-                      <PureCell.Content>
-                        <PureCell.Main>
-                          <Typography.Text view="primary-small" weight="medium">
-                            {title}
-                          </Typography.Text>
-                          <Typography.Text view="secondary-large" color="secondary">
-                            {subtitle}
-                          </Typography.Text>
-                        </PureCell.Main>
-                      </PureCell.Content>
-                    </PureCell>
-                  </SwiperSlide>
-                ))}
-              </Swiper>
-            </div>
-          </div>
-
-          <Typography.TitleResponsive style={{ marginTop: '1rem' }} tag="h2" view="small" font="system" weight="medium">
-            Как это работает
-          </Typography.TitleResponsive>
-
-          <Steps isVerticalAlign={true} interactive={false} className={appSt.stepStyle}>
-            {hiw.map(item => (
-              <span key={item.title}>
-                <Typography.Text tag="p" defaultMargins={false} view="component-primary">
+        {secs.map(item => (
+          <PureCell key={item.title}>
+            <PureCell.Graphics verticalAlign="center">
+              <SuperEllipse size={48}>{item.icon}</SuperEllipse>
+            </PureCell.Graphics>
+            <PureCell.Content>
+              <PureCell.Main>
+                <Typography.Text view="primary-medium" weight="medium">
                   {item.title}
                 </Typography.Text>
                 <Typography.Text view="primary-small" color="secondary">
-                  {item.desc}
+                  {item.subtitle}
                 </Typography.Text>
-              </span>
-            ))}
-          </Steps>
+              </PureCell.Main>
+            </PureCell.Content>
+          </PureCell>
+        ))}
 
-          <Typography.TitleResponsive style={{ marginTop: '1rem' }} tag="h2" view="small" font="system" weight="medium">
-            Дополнительные вопросы
-          </Typography.TitleResponsive>
+        <Typography.TitleResponsive style={{ marginTop: '1rem' }} tag="h2" view="small" font="system" weight="medium">
+          Вопросы и ответы
+        </Typography.TitleResponsive>
 
-          {faqs.map((faq, index) => (
-            <div key={index}>
-              <div
-                onClick={() => {
-                  window.gtag('event', '7106_bundle_faq', { faq: String(index + 1), var: 'var3' });
+        {faqs.map((faq, index) => (
+          <div key={index}>
+            <div
+              onClick={() => {
+                window.gtag('event', '7364_bundle_faq', { faq: String(index + 1), var: 'var3' });
 
-                  setCollapsedItem(items =>
-                    items.includes(String(index + 1))
-                      ? items.filter(item => item !== String(index + 1))
-                      : [...items, String(index + 1)],
-                  );
-                }}
-                className={appSt.rowSb}
-              >
-                <Typography.Text view="primary-medium" weight="medium">
-                  {faq.question}
-                </Typography.Text>
-                {collapsedItems.includes(String(index + 1)) ? (
-                  <div style={{ flexShrink: 0 }}>
-                    <ChevronUpMIcon />
-                  </div>
-                ) : (
-                  <div style={{ flexShrink: 0 }}>
-                    <ChevronDownMIcon />
-                  </div>
-                )}
-              </div>
-              <Collapse expanded={collapsedItems.includes(String(index + 1))}>
-                {faq.answers.map((answerPart, answerIndex) => (
-                  <Typography.Text key={answerIndex} tag="p" defaultMargins={false} view="primary-medium">
+                setCollapsedItem(items =>
+                  items.includes(String(index + 1))
+                    ? items.filter(item => item !== String(index + 1))
+                    : [...items, String(index + 1)],
+                );
+              }}
+              className={appSt.rowSb}
+            >
+              <Typography.Text view="primary-medium" weight="medium">
+                {faq.question}
+              </Typography.Text>
+              {collapsedItems.includes(String(index + 1)) ? (
+                <div style={{ flexShrink: 0 }}>
+                  <ChevronUpMIcon />
+                </div>
+              ) : (
+                <div style={{ flexShrink: 0 }}>
+                  <ChevronDownMIcon />
+                </div>
+              )}
+            </div>
+            <Collapse expanded={collapsedItems.includes(String(index + 1))}>
+              {faq.answers.map((answerPart, answerIndex) => (
+                <Fragment key={answerIndex}>
+                  <Typography.Text tag="p" defaultMargins={false} view="primary-medium">
                     {answerPart}
                   </Typography.Text>
-                ))}
-              </Collapse>
-            </div>
-          ))}
-        </div>
+                  <Gap size={8} />
+                </Fragment>
+              ))}
+            </Collapse>
+          </div>
+        ))}
       </div>
       <Gap size={96} />
 
@@ -800,11 +1044,11 @@ export const App = () => {
           block
           view="primary"
           onClick={() => {
-            window.gtag('event', '7106_start_open_bundle', { var: 'var3' });
+            window.gtag('event', '7364_start_open_bundle', { var: 'var3' });
             setSteps('step1');
           }}
         >
-          Открыть Вклад + ПДС
+          Открыть вклад и ПДС
         </Button>
       </div>
     </>
